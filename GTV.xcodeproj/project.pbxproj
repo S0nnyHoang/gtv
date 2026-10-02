@@ -1,0 +1,835 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		102678B1B9E005D3F8846849 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AE1317FEFE440998EEC6D1D /* Carbon.framework */; };
+		17349B7F2A315ACEF0CCFC40 /* ServiceManagement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C05CE482906309F6F495B66 /* ServiceManagement.framework */; };
+		27E517B3F7827B5E51EA4349 /* Modes.swift in Sources */ = {isa = PBXBuildFile; fileRef = F326911EE6FE5701740BC28C /* Modes.swift */; };
+		2ABB4140E3596090D04C6F5C /* InputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C4829B78686F5EEDAAE4D2B /* InputController.swift */; };
+		2CA8B02DB989C2010B7AA4BE /* ServiceManagement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C05CE482906309F6F495B66 /* ServiceManagement.framework */; };
+		3D7471C501EDD6777AD2D5C6 /* icon-en.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 6EC9C644AE077F93675E91A9 /* icon-en.tiff */; };
+		41FF32F32315E6D736E05D8D /* libVietEngine.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EDC763A5B1168D26B5D63A5 /* libVietEngine.a */; };
+		4B50A1F27D84C95639A8055C /* icon-vi.tiff in Resources */ = {isa = PBXBuildFile; fileRef = B2D83E35B63F7EE1F11CC695 /* icon-vi.tiff */; };
+		5310F1969D3E40E701E7A2AC /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 651D73CBF80DB9EFE28F6BF4 /* main.swift */; };
+		53227346BE7555757824037E /* Hotkey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EBC293736E90A638F492AF /* Hotkey.swift */; };
+		557B554D6C768A575EA2306E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1AE3EDD526CDDC080D9AA1EF /* InfoPlist.strings */; };
+		5EE3E1435ED4BAAEA7C372E0 /* StatusController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5FD2BD5169653BA694708AC /* StatusController.swift */; };
+		6D41862278EEF1AC81C65E0E /* Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DEFB062B38C344BBD0BB2A /* Types.swift */; };
+		6FCDE06E26C5A76EC244B072 /* icon.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 74943AB85A1ACC63E7E1A7C7 /* icon.tiff */; };
+		73798D73ECE6772A5B0750CA /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AE1317FEFE440998EEC6D1D /* Carbon.framework */; };
+		75A385E61452BF063D50685B /* SessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92A46C139EFA1902702308B9 /* SessionTests.swift */; };
+		76F03C9123DBEDB0E57A1565 /* AppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 61AA7C5CC11AC3862C10B7D5 /* AppIcon.icns */; };
+		79C7FA9AAB3F6EEB7F81CEE2 /* Tables.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAD40F1C897E90A79DF03B71 /* Tables.swift */; };
+		895FE5A06609E7222E5D90E1 /* InputMethodKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D20BB3D8C69F6C5A30753353 /* InputMethodKit.framework */; };
+		8AC9242AC6506D3D3D52F561 /* Engine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C942C41A08257D1C27DEDCBF /* Engine.swift */; };
+		97E905D9A7D26EF5D3A50FFA /* AppMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE67B802A8FA7F5580AC3A7 /* AppMenu.swift */; };
+		98BD6F049A72532A01E2D9D8 /* GTVInput.app in Embed Dependencies */ = {isa = PBXBuildFile; fileRef = 5113B87895D95941D7323D26 /* GTVInput.app */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		B3DF1452440C71DC46015B0B /* libVietEngine.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EDC763A5B1168D26B5D63A5 /* libVietEngine.a */; };
+		B7731BE6BCB9AEDAED4111D5 /* EngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E0AD2333CEFBE4AC1B693A6 /* EngineTests.swift */; };
+		BE028D2E9E5FAA46C77A67B7 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A683909FBBF4463C94CF640 /* main.swift */; };
+		BF2DFCEBF0D24AB175DBC91B /* InputSources.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661C0580E5E6B5E582BAD3D4 /* InputSources.swift */; };
+		CCE6AED1AD68BA08CFE2E4D6 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E3C504A1435BA73CE275369 /* Settings.swift */; };
+		CDBD08879CFA21A2E6D6C462 /* DebugLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05AC7C50B20F8ED398081259 /* DebugLog.swift */; };
+		D75477C469A22CF7F93067FB /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36ECC934EBB2131DFC903D8E /* Session.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		03BCACB9A5DF4AB68E5C3112 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8846D421F49C5BB5938E5C6B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EDFD58CD7C94E7B3A1DFB94D;
+			remoteInfo = GTVInput;
+		};
+		6D94CA69F7E5DDBFCA6CE9E4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8846D421F49C5BB5938E5C6B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8E573B9F1926D085B908F6A4;
+			remoteInfo = VietEngine;
+		};
+		D441574353BCE0914F7E63E7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8846D421F49C5BB5938E5C6B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8E573B9F1926D085B908F6A4;
+			remoteInfo = VietEngine;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A30024A236B0B9413974623E /* Embed Dependencies */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+				98BD6F049A72532A01E2D9D8 /* GTVInput.app in Embed Dependencies */,
+			);
+			name = "Embed Dependencies";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		01DEFB062B38C344BBD0BB2A /* Types.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Types.swift; sourceTree = "<group>"; };
+		05AC7C50B20F8ED398081259 /* DebugLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLog.swift; sourceTree = "<group>"; };
+		0C05CE482906309F6F495B66 /* ServiceManagement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ServiceManagement.framework; path = System/Library/Frameworks/ServiceManagement.framework; sourceTree = SDKROOT; };
+		21993D811D759042E28D12C2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		36ECC934EBB2131DFC903D8E /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
+		3EDC763A5B1168D26B5D63A5 /* libVietEngine.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libVietEngine.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		40B13F5512AE34AB0B9A223B /* VietEngineTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VietEngineTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		42EBC293736E90A638F492AF /* Hotkey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hotkey.swift; sourceTree = "<group>"; };
+		5113B87895D95941D7323D26 /* GTVInput.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GTVInput.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5E3C504A1435BA73CE275369 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		61AA7C5CC11AC3862C10B7D5 /* AppIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = AppIcon.icns; sourceTree = "<group>"; };
+		651D73CBF80DB9EFE28F6BF4 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		661C0580E5E6B5E582BAD3D4 /* InputSources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputSources.swift; sourceTree = "<group>"; };
+		6A683909FBBF4463C94CF640 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		6EC9C644AE077F93675E91A9 /* icon-en.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "icon-en.tiff"; sourceTree = "<group>"; };
+		74943AB85A1ACC63E7E1A7C7 /* icon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = icon.tiff; sourceTree = "<group>"; };
+		7BE67B802A8FA7F5580AC3A7 /* AppMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppMenu.swift; sourceTree = "<group>"; };
+		8AE1317FEFE440998EEC6D1D /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
+		8C4829B78686F5EEDAAE4D2B /* InputController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputController.swift; sourceTree = "<group>"; };
+		8DCC5FFA32B815F886682598 /* GTV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GTV.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		92A46C139EFA1902702308B9 /* SessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionTests.swift; sourceTree = "<group>"; };
+		9E0AD2333CEFBE4AC1B693A6 /* EngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EngineTests.swift; sourceTree = "<group>"; };
+		AEAABA945E74ABAD204362F1 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		B2D83E35B63F7EE1F11CC695 /* icon-vi.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "icon-vi.tiff"; sourceTree = "<group>"; };
+		BAD40F1C897E90A79DF03B71 /* Tables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tables.swift; sourceTree = "<group>"; };
+		C5FD2BD5169653BA694708AC /* StatusController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusController.swift; sourceTree = "<group>"; };
+		C942C41A08257D1C27DEDCBF /* Engine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Engine.swift; sourceTree = "<group>"; };
+		D20BB3D8C69F6C5A30753353 /* InputMethodKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = InputMethodKit.framework; path = System/Library/Frameworks/InputMethodKit.framework; sourceTree = SDKROOT; };
+		F326911EE6FE5701740BC28C /* Modes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Modes.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		16EAB851DD6F15C29F750CD2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B3DF1452440C71DC46015B0B /* libVietEngine.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4380E26192A9CEB58C0E331A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				41FF32F32315E6D736E05D8D /* libVietEngine.a in Frameworks */,
+				895FE5A06609E7222E5D90E1 /* InputMethodKit.framework in Frameworks */,
+				73798D73ECE6772A5B0750CA /* Carbon.framework in Frameworks */,
+				2CA8B02DB989C2010B7AA4BE /* ServiceManagement.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D4C8D51D53A1641C8233C8CD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				102678B1B9E005D3F8846849 /* Carbon.framework in Frameworks */,
+				17349B7F2A315ACEF0CCFC40 /* ServiceManagement.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		050F22D94597C4C559E35515 /* VietEngine */ = {
+			isa = PBXGroup;
+			children = (
+				C942C41A08257D1C27DEDCBF /* Engine.swift */,
+				36ECC934EBB2131DFC903D8E /* Session.swift */,
+				BAD40F1C897E90A79DF03B71 /* Tables.swift */,
+				01DEFB062B38C344BBD0BB2A /* Types.swift */,
+			);
+			path = VietEngine;
+			sourceTree = "<group>";
+		};
+		1B4172254A14D91F0058A20B /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				61AA7C5CC11AC3862C10B7D5 /* AppIcon.icns */,
+				6EC9C644AE077F93675E91A9 /* icon-en.tiff */,
+				B2D83E35B63F7EE1F11CC695 /* icon-vi.tiff */,
+				74943AB85A1ACC63E7E1A7C7 /* icon.tiff */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		3BD0439373FC4D52976EF1F4 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				98548780D8765BA59417A7DE /* VietEngineTests */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		408E38551642E48D767F566C /* GTVInput */ = {
+			isa = PBXGroup;
+			children = (
+				7BE67B802A8FA7F5580AC3A7 /* AppMenu.swift */,
+				05AC7C50B20F8ED398081259 /* DebugLog.swift */,
+				42EBC293736E90A638F492AF /* Hotkey.swift */,
+				8C4829B78686F5EEDAAE4D2B /* InputController.swift */,
+				661C0580E5E6B5E582BAD3D4 /* InputSources.swift */,
+				6A683909FBBF4463C94CF640 /* main.swift */,
+				F326911EE6FE5701740BC28C /* Modes.swift */,
+				5E3C504A1435BA73CE275369 /* Settings.swift */,
+				C5FD2BD5169653BA694708AC /* StatusController.swift */,
+				D14077F6CDFB7830F412F01C /* Localization */,
+			);
+			path = GTVInput;
+			sourceTree = "<group>";
+		};
+		451A54DCCB0E491939957BFB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8AE1317FEFE440998EEC6D1D /* Carbon.framework */,
+				D20BB3D8C69F6C5A30753353 /* InputMethodKit.framework */,
+				0C05CE482906309F6F495B66 /* ServiceManagement.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		69B66FA22284D03E0D8BB656 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				408E38551642E48D767F566C /* GTVInput */,
+				D73CE58D1D6EEA87DEA50154 /* GTVLauncher */,
+				050F22D94597C4C559E35515 /* VietEngine */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		98548780D8765BA59417A7DE /* VietEngineTests */ = {
+			isa = PBXGroup;
+			children = (
+				9E0AD2333CEFBE4AC1B693A6 /* EngineTests.swift */,
+				92A46C139EFA1902702308B9 /* SessionTests.swift */,
+			);
+			path = VietEngineTests;
+			sourceTree = "<group>";
+		};
+		C8A640CCF1BD5249782FB272 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8DCC5FFA32B815F886682598 /* GTV.app */,
+				5113B87895D95941D7323D26 /* GTVInput.app */,
+				3EDC763A5B1168D26B5D63A5 /* libVietEngine.a */,
+				40B13F5512AE34AB0B9A223B /* VietEngineTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D14077F6CDFB7830F412F01C /* Localization */ = {
+			isa = PBXGroup;
+			children = (
+				1AE3EDD526CDDC080D9AA1EF /* InfoPlist.strings */,
+			);
+			path = Localization;
+			sourceTree = "<group>";
+		};
+		D73CE58D1D6EEA87DEA50154 /* GTVLauncher */ = {
+			isa = PBXGroup;
+			children = (
+				651D73CBF80DB9EFE28F6BF4 /* main.swift */,
+			);
+			path = GTVLauncher;
+			sourceTree = "<group>";
+		};
+		E9DB25A53209EAAD9BA15771 = {
+			isa = PBXGroup;
+			children = (
+				1B4172254A14D91F0058A20B /* Resources */,
+				69B66FA22284D03E0D8BB656 /* Sources */,
+				3BD0439373FC4D52976EF1F4 /* Tests */,
+				451A54DCCB0E491939957BFB /* Frameworks */,
+				C8A640CCF1BD5249782FB272 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4D95204462F83B7AD87436B8 /* VietEngineTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 507E3D06797423036BF3B828 /* Build configuration list for PBXNativeTarget "VietEngineTests" */;
+			buildPhases = (
+				3E0145D4227B257BFB789DDB /* Sources */,
+				16EAB851DD6F15C29F750CD2 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				17C9D359CC29BD6AB911C3FB /* PBXTargetDependency */,
+			);
+			name = VietEngineTests;
+			packageProductDependencies = (
+			);
+			productName = VietEngineTests;
+			productReference = 40B13F5512AE34AB0B9A223B /* VietEngineTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		6107753C4056184AC942C413 /* GTV */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D6BD7093235248432EB6B561 /* Build configuration list for PBXNativeTarget "GTV" */;
+			buildPhases = (
+				89EBA39AE86DA009D263A5C3 /* Sources */,
+				2A159787447A79403D5B37E0 /* Resources */,
+				D4C8D51D53A1641C8233C8CD /* Frameworks */,
+				A30024A236B0B9413974623E /* Embed Dependencies */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2CE865563B1635B7328B4873 /* PBXTargetDependency */,
+			);
+			name = GTV;
+			packageProductDependencies = (
+			);
+			productName = GTV;
+			productReference = 8DCC5FFA32B815F886682598 /* GTV.app */;
+			productType = "com.apple.product-type.application";
+		};
+		8E573B9F1926D085B908F6A4 /* VietEngine */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6B6BC3A1D93EBD08590893B3 /* Build configuration list for PBXNativeTarget "VietEngine" */;
+			buildPhases = (
+				EF8115AD3D875E296B446003 /* Sources */,
+				B68D0DABFBB50C215EEE061B /* Copy Swift Objective-C Interface Header */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = VietEngine;
+			packageProductDependencies = (
+			);
+			productName = VietEngine;
+			productReference = 3EDC763A5B1168D26B5D63A5 /* libVietEngine.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		EDFD58CD7C94E7B3A1DFB94D /* GTVInput */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4DA626AE45BD0017C596F149 /* Build configuration list for PBXNativeTarget "GTVInput" */;
+			buildPhases = (
+				4DAC19F03163A0A7C2B8E471 /* Sources */,
+				D4504C533C7354A792101A9B /* Resources */,
+				4380E26192A9CEB58C0E331A /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F21F8F83FB1765801A7B9D38 /* PBXTargetDependency */,
+			);
+			name = GTVInput;
+			packageProductDependencies = (
+			);
+			productName = GTVInput;
+			productReference = 5113B87895D95941D7323D26 /* GTVInput.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		8846D421F49C5BB5938E5C6B /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					4D95204462F83B7AD87436B8 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Manual;
+					};
+					6107753C4056184AC942C413 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Manual;
+					};
+					8E573B9F1926D085B908F6A4 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Manual;
+					};
+					EDFD58CD7C94E7B3A1DFB94D = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Manual;
+					};
+				};
+			};
+			buildConfigurationList = 4E84708E7B18464BD1FFC5A5 /* Build configuration list for PBXProject "GTV" */;
+			developmentRegion = vi;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+				vi,
+			);
+			mainGroup = E9DB25A53209EAAD9BA15771;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = C8A640CCF1BD5249782FB272 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6107753C4056184AC942C413 /* GTV */,
+				EDFD58CD7C94E7B3A1DFB94D /* GTVInput */,
+				8E573B9F1926D085B908F6A4 /* VietEngine */,
+				4D95204462F83B7AD87436B8 /* VietEngineTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2A159787447A79403D5B37E0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				76F03C9123DBEDB0E57A1565 /* AppIcon.icns in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D4504C533C7354A792101A9B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				557B554D6C768A575EA2306E /* InfoPlist.strings in Resources */,
+				3D7471C501EDD6777AD2D5C6 /* icon-en.tiff in Resources */,
+				4B50A1F27D84C95639A8055C /* icon-vi.tiff in Resources */,
+				6FCDE06E26C5A76EC244B072 /* icon.tiff in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		B68D0DABFBB50C215EEE061B /* Copy Swift Objective-C Interface Header */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(DERIVED_SOURCES_DIR)/$(SWIFT_OBJC_INTERFACE_HEADER_NAME)",
+			);
+			name = "Copy Swift Objective-C Interface Header";
+			outputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/include/$(PRODUCT_MODULE_NAME)/$(SWIFT_OBJC_INTERFACE_HEADER_NAME)",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "ditto \"${SCRIPT_INPUT_FILE_0}\" \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3E0145D4227B257BFB789DDB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B7731BE6BCB9AEDAED4111D5 /* EngineTests.swift in Sources */,
+				75A385E61452BF063D50685B /* SessionTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4DAC19F03163A0A7C2B8E471 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				97E905D9A7D26EF5D3A50FFA /* AppMenu.swift in Sources */,
+				CDBD08879CFA21A2E6D6C462 /* DebugLog.swift in Sources */,
+				53227346BE7555757824037E /* Hotkey.swift in Sources */,
+				2ABB4140E3596090D04C6F5C /* InputController.swift in Sources */,
+				BF2DFCEBF0D24AB175DBC91B /* InputSources.swift in Sources */,
+				27E517B3F7827B5E51EA4349 /* Modes.swift in Sources */,
+				CCE6AED1AD68BA08CFE2E4D6 /* Settings.swift in Sources */,
+				5EE3E1435ED4BAAEA7C372E0 /* StatusController.swift in Sources */,
+				BE028D2E9E5FAA46C77A67B7 /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		89EBA39AE86DA009D263A5C3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5310F1969D3E40E701E7A2AC /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EF8115AD3D875E296B446003 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8AC9242AC6506D3D3D52F561 /* Engine.swift in Sources */,
+				D75477C469A22CF7F93067FB /* Session.swift in Sources */,
+				79C7FA9AAB3F6EEB7F81CEE2 /* Tables.swift in Sources */,
+				6D41862278EEF1AC81C65E0E /* Types.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		17C9D359CC29BD6AB911C3FB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8E573B9F1926D085B908F6A4 /* VietEngine */;
+			targetProxy = D441574353BCE0914F7E63E7 /* PBXContainerItemProxy */;
+		};
+		2CE865563B1635B7328B4873 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EDFD58CD7C94E7B3A1DFB94D /* GTVInput */;
+			targetProxy = 03BCACB9A5DF4AB68E5C3112 /* PBXContainerItemProxy */;
+		};
+		F21F8F83FB1765801A7B9D38 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8E573B9F1926D085B908F6A4 /* VietEngine */;
+			targetProxy = 6D94CA69F7E5DDBFCA6CE9E4 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		1AE3EDD526CDDC080D9AA1EF /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				21993D811D759042E28D12C2 /* en */,
+				AEAABA945E74ABAD204362F1 /* vi */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		22695941D814E81F73365F66 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "Resources/Input-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.gtv.inputmethod.GTV;
+				PRODUCT_NAME = GTVInput;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		37259679C76CB8A215896336 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.gtv.VietEngineTests;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		499152F5FAA669E95750513B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_NAME = VietEngine;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		64ABA3553F203DFD0E13CD51 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "Resources/Input-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.gtv.inputmethod.GTV;
+				PRODUCT_NAME = GTVInput;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		6500C3140CC0E8203F0BDC29 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.gtv.VietEngineTests;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		795DB6BB2187436C78FE270F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 20;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.9.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				STRIP_INSTALLED_PRODUCT = YES;
+				STRIP_STYLE = "non-global";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-Osize";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		84A5D069F4573404967D6F03 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "Resources/Launcher-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.gtv.GTV;
+				PRODUCT_NAME = GTV;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		99A4466FF6AD62602A2075E0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 20;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.9.3;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		BC8F46F680893CB6F83E9227 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_NAME = VietEngine;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		D88C0560612A0C1F2EBF5D7C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "Resources/Launcher-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.gtv.GTV;
+				PRODUCT_NAME = GTV;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4DA626AE45BD0017C596F149 /* Build configuration list for PBXNativeTarget "GTVInput" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				22695941D814E81F73365F66 /* Debug */,
+				64ABA3553F203DFD0E13CD51 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		4E84708E7B18464BD1FFC5A5 /* Build configuration list for PBXProject "GTV" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				99A4466FF6AD62602A2075E0 /* Debug */,
+				795DB6BB2187436C78FE270F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		507E3D06797423036BF3B828 /* Build configuration list for PBXNativeTarget "VietEngineTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6500C3140CC0E8203F0BDC29 /* Debug */,
+				37259679C76CB8A215896336 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		6B6BC3A1D93EBD08590893B3 /* Build configuration list for PBXNativeTarget "VietEngine" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				499152F5FAA669E95750513B /* Debug */,
+				BC8F46F680893CB6F83E9227 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		D6BD7093235248432EB6B561 /* Build configuration list for PBXNativeTarget "GTV" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D88C0560612A0C1F2EBF5D7C /* Debug */,
+				84A5D069F4573404967D6F03 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 8846D421F49C5BB5938E5C6B /* Project object */;
+}

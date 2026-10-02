@@ -1,0 +1,107 @@
+# Cấu hình XcodeGen. Sửa file này rồi chạy `xcodegen` để sinh lại GTV.xcodeproj.
+name: GTV
+
+options:
+  deploymentTarget:
+    macOS: "12.0"
+  createIntermediateGroups: true
+  developmentLanguage: vi
+
+settings:
+  base:
+    MARKETING_VERSION: "1.9.3"
+    CURRENT_PROJECT_VERSION: "20"
+    SWIFT_VERSION: "5.0"
+    # Mặc định ký ad-hoc (chạy được trên máy build). Khi phát hành, build.sh truyền
+    # DEVELOPMENT_TEAM + CODE_SIGN_IDENTITY "Developer ID Application" để notarize.
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGN_IDENTITY: "-"
+    DEVELOPMENT_TEAM: ""
+    ENABLE_HARDENED_RUNTIME: YES
+    DEAD_CODE_STRIPPING: YES
+  configs:
+    Release:
+      SWIFT_OPTIMIZATION_LEVEL: "-Osize"
+      STRIP_INSTALLED_PRODUCT: YES
+      STRIP_STYLE: non-global
+
+targets:
+  # Bộ xử lý gõ thuần Swift (không phụ thuộc AppKit).
+  VietEngine:
+    type: library.static
+    platform: macOS
+    sources: [Sources/VietEngine]
+    settings:
+      base:
+        PRODUCT_NAME: VietEngine
+
+  # Bộ gõ (InputMethodKit) + biểu tượng V/E trên thanh menu.
+  # Được nhúng vào GTV.app và cài vào ~/Library/Input Methods khi mở GTV.
+  GTVInput:
+    type: application
+    platform: macOS
+    sources:
+      - Sources/GTVInput
+      - path: Resources/icon.tiff
+        buildPhase: resources
+      - path: Resources/icon-vi.tiff
+        buildPhase: resources
+      - path: Resources/icon-en.tiff
+        buildPhase: resources
+    dependencies:
+      - target: VietEngine
+      - sdk: InputMethodKit.framework
+      - sdk: Carbon.framework
+      - sdk: ServiceManagement.framework
+    settings:
+      base:
+        PRODUCT_NAME: GTVInput
+        PRODUCT_BUNDLE_IDENTIFIER: com.gtv.inputmethod.GTV
+        INFOPLIST_FILE: Resources/Input-Info.plist
+        SKIP_INSTALL: YES
+
+  # App người dùng mở (trong /Applications).
+  GTV:
+    type: application
+    platform: macOS
+    sources:
+      - Sources/GTVLauncher
+      - path: Resources/AppIcon.icns
+        buildPhase: resources
+    dependencies:
+      - target: GTVInput
+        embed: true
+        codeSign: true
+        copy:
+          destination: resources
+      - sdk: Carbon.framework
+      - sdk: ServiceManagement.framework
+    settings:
+      base:
+        PRODUCT_NAME: GTV
+        PRODUCT_BUNDLE_IDENTIFIER: com.gtv.GTV
+        INFOPLIST_FILE: Resources/Launcher-Info.plist
+
+  VietEngineTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources: [Tests/VietEngineTests]
+    dependencies:
+      - target: VietEngine
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.gtv.VietEngineTests
+
+schemes:
+  GTV:
+    build:
+      targets:
+        GTV: all
+        VietEngineTests: [test]
+    test:
+      targets: [VietEngineTests]
+    run:
+      config: Debug
+    archive:
+      config: Release
