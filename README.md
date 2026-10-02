@@ -71,16 +71,7 @@ Người dùng chỉ cần mở file `.dmg`, kéo **GTV** vào **Applications**,
 
 ### Ký & notarize
 
-Mặc định app được ký ad-hoc: chạy tốt trên máy build, nhưng trên máy khác macOS sẽ chặn
-("không xác định được nhà phát triển") cho tới khi người dùng vào *Quyền riêng tư & Bảo mật → Vẫn mở*.
-Để người dùng mở được ngay, cần tài khoản Apple Developer (chứng chỉ **Developer ID Application**):
-
-```bash
-# Làm 1 lần: lưu thông tin notarize vào Keychain (dùng app-specific password)
-xcrun notarytool store-credentials gtv-notary --apple-id you@example.com --team-id TEAMID1234
-
-DEVELOPER_ID="Developer ID Application: Ten Ban (TEAMID1234)" NOTARY_PROFILE=gtv-notary ./dmg.sh
-```
+Đang đi mua Apple Developer Account :(
 
 Phiên bản app sửa ở `MARKETING_VERSION` / `CURRENT_PROJECT_VERSION` trong `project.yml`.
 
