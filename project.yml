@@ -9,8 +9,8 @@ options:
 
 settings:
   base:
-    MARKETING_VERSION: "1.10.4"
-    CURRENT_PROJECT_VERSION: "25"
+    MARKETING_VERSION: "1.10.5"
+    CURRENT_PROJECT_VERSION: "26"
     SWIFT_VERSION: "5.0"
     # Mặc định ký ad-hoc (chạy được trên máy build). Khi phát hành, build.sh truyền
     # DEVELOPMENT_TEAM + CODE_SIGN_IDENTITY "Developer ID Application" để notarize.

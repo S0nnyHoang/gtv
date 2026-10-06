@@ -4,3 +4,6 @@ build/
 xcuserdata/
 *.xcuserstate
 .DS_Store
+
+# Tài liệu nội bộ, không đưa lên git
+docs/

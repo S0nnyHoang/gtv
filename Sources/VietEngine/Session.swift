@@ -25,6 +25,7 @@ public final class Session {
     public let engine = Engine()
     private var marked = false   // từ hiện tại dùng marked text (gạch chân)
     private var anchor = 0       // vị trí bắt đầu của từ đang gõ
+    private var qtApp = false    // ô nhập liệu thuộc ứng dụng Qt (xem `replace`)
 
     public init() {}
 
@@ -34,7 +35,10 @@ public final class Session {
     }
 
     /// Trả về true nếu bộ gõ đã xử lý phím (ứng dụng không cần xử lý nữa).
-    public func handle(_ key: Key, _ client: TextClient, options: EngineOptions, forceMarked: Bool) -> Bool {
+    /// `qtApp`: ứng dụng viết bằng Qt (Telegram Desktop…), cần cách thay riêng — xem `replace`.
+    public func handle(_ key: Key, _ client: TextClient, options: EngineOptions, forceMarked: Bool,
+                       qtApp: Bool = false) -> Bool {
+        self.qtApp = qtApp
         switch key {
         case .other:
             breakWord(client)
@@ -154,10 +158,12 @@ public final class Session {
         let start = sel.location - deleteLen
         // Vùng đang bôi đen sau từ (gợi ý tự động) cũng bị thay luôn.
         let length = deleteLen + sel.length
-        if let typed, insert == String(typed), length > 0 {
+        if qtApp, let typed, insert == String(typed), length > 0 {
             // Chuỗi thay vào trùng ký tự phím vừa bấm (vd. "ơ" + "[" -> "[", "ư" + "w" -> "w"): ứng dụng Qt
             // (Telegram...) coi đó là nhấn phím thường, bỏ qua vùng cần thay (và bỏ qua cả lệnh thay bằng
             // chuỗi rỗng) -> "ơ[". Đi qua marked text thì Qt xử lý theo đường của bộ gõ.
+            // Chỉ dùng cho Qt: ô nhập liệu trong trang web (Chrome, Electron) lại bỏ qua vùng cần thay
+            // của marked text, còn cách thay trực tiếp thì đúng.
             client.replaceViaMarkedText(location: start, length: length, with: insert)
         } else {
             client.replaceText(location: start, length: length, with: insert)

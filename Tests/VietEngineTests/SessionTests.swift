@@ -10,6 +10,9 @@ private final class Field: TextClient {
     /// Mô phỏng ứng dụng Qt (Telegram): chuỗi chèn vào trùng ký tự phím đang bấm thì bị coi là nhấn
     /// phím thường — bỏ qua vùng cần thay, chèn tại con trỏ.
     var qtStyle = false
+    /// Mô phỏng ô nhập liệu trong trang web (Chrome, Electron): marked text bỏ qua vùng cần thay,
+    /// đặt tại con trỏ; thay trực tiếp thì đúng.
+    var chromiumStyle = false
     private var currentKey: Character?
 
     let session = Session()
@@ -35,7 +38,8 @@ private final class Field: TextClient {
     }
     func setMarkedText(_ text: String) {}
     func replaceViaMarkedText(location: Int, length: Int, with s: String) {
-        // Marked text luôn thay đúng vùng (kể cả ứng dụng Qt), sau đó chốt.
+        if chromiumStyle { insertAtCursor(s); return }
+        // Qt và ứng dụng Cocoa: marked text thay đúng vùng, sau đó chốt.
         units.replaceSubrange(location..<location + length, with: Array(s.utf16))
         sel = (location + s.utf16.count, 0)
     }
@@ -51,7 +55,7 @@ private final class Field: TextClient {
     func type(_ keys: String) {
         for k in keys {
             currentKey = k
-            if !session.handle(.char(k), self, options: options, forceMarked: false) {
+            if !session.handle(.char(k), self, options: options, forceMarked: false, qtApp: qtStyle) {
                 insertText(String(k))        // ứng dụng tự xử lý phím
             }
             currentKey = nil
@@ -59,7 +63,7 @@ private final class Field: TextClient {
     }
 
     func backspace() {
-        if session.handle(.backspace, self, options: options, forceMarked: false) { return }
+        if session.handle(.backspace, self, options: options, forceMarked: false, qtApp: qtStyle) { return }
         if sel.length > 0 {
             units.removeSubrange(sel.location..<sel.location + sel.length)
         } else if sel.location > 0 {
@@ -171,6 +175,20 @@ final class SessionTests: XCTestCase {
         for (keys, expected) in cases {
             let f = Field()
             f.qtStyle = true
+            f.type(keys)
+            XCTAssertEqual(f.text, expected, keys)
+        }
+    }
+
+    /// Ô nhập liệu trong trang web (ô "Ask Google" của Chrome, Claude desktop): bản 1.10.4 dùng marked
+    /// text cho "[[" ở mọi ứng dụng nên ra "ơ[". Chỉ ứng dụng Qt mới dùng marked text.
+    func testChromiumWebField() {
+        let cases: [(String, String)] = [
+            ("[[", "["), ("]]", "]"), ("ww", "w"), ("t[[", "t["), ("vieetj", "việt"), ("dduwowngf", "đường"),
+        ]
+        for (keys, expected) in cases {
+            let f = Field()
+            f.chromiumStyle = true
             f.type(keys)
             XCTAssertEqual(f.text, expected, keys)
         }

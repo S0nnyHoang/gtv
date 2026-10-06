@@ -69,6 +69,7 @@ final class GTVInputController: IMKInputController {
         guard let client = sender as? Client else { return }
         bundleID = client.bundleIdentifier() ?? ""
         Modes.shared.clientActivated(client, bundleID: bundleID)
+        _ = QtDetector.isQt(bundleID)   // kiểm tra trước ở luồng nền, có kết quả trước khi cần
     }
 
     override func deactivateServer(_ sender: Any!) {
@@ -149,7 +150,8 @@ final class GTVInputController: IMKInputController {
         adapter.client = client
         defer { adapter.client = nil }
         return session.handle(key, adapter, options: settings.options,
-                              forceMarked: settings.useMarked(for: bundleID))
+                              forceMarked: settings.useMarked(for: bundleID),
+                              qtApp: QtDetector.isQt(bundleID))
     }
 
     // MARK: - Menu trong biểu tượng bộ gõ của macOS
