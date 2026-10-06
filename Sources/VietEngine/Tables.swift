@@ -96,6 +96,9 @@ enum VTable {
     /// Phụ âm đầu đang gõ dở (chưa có nguyên âm).
     static let initialPrefixes: Set<String> = initials.union(["q"])
 
+    /// Phụ âm đầu kiểu viết thân mật (miền Nam), luôn được chấp nhận: zậy, zui, dzô, qá.
+    static let informalInitials: Set<String> = ["z", "dz", "q"]
+
     static let finals: Set<String> = ["c", "ch", "m", "n", "ng", "nh", "p", "t"]
 
     enum FinalRule { case open, closed, both }

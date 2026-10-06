@@ -10,6 +10,8 @@ Bộ gõ tiếng Việt viết bằng Swift + InputMethodKit, nhắm vào 2 lỗ
 Trước mỗi lần thay, GTV đọc lại văn bản trước con trỏ để kiểm tra có khớp với từ đang gõ không.
 Nếu không khớp (ví dụ đã click sang chỗ khác) thì bắt đầu một từ mới, không bao giờ ghi sai chỗ.
 
+Tài liệu kỹ thuật chi tiết (kiến trúc, lý do thiết kế, giải thích code): [docs/TECHNICAL.md](docs/TECHNICAL.md).
+
 ## Tính năng
 
 - Kiểu gõ: **Telex**, **VNI**, **Telex đơn giản** (`w` đứng riêng không thành `ư`, không dùng `[ ]`)
@@ -17,6 +19,7 @@ Nếu không khớp (ví dụ đã click sang chỗ khác) thì bắt đầu m�
 - Đặt dấu kiểu cũ (`hòa`, `thúy`, mặc định) hoặc kiểu mới (`hoà`, `thuý`); bỏ dấu tự do (`nguoiwf` → `người`)
 - Gõ phím lặp lại để huỷ (`ass` → `as`, `ddd` → `dd`, `ww` → `w`)
 - Tự khôi phục từ không phải tiếng Việt: gõ `windows`, `facebook`, `text`… ra đúng chữ mà không cần tắt bộ gõ
+- Kiểu viết thân mật: phụ âm đầu `z`, `dz`, `q` không có `u` — `zij` → `zị`, `zaayj` → `zậy`, `dzoo` → `dzô`, `qas` → `qá`. Đánh đổi: vài từ tiếng Anh trùng với cách gõ một âm tiết thân mật sẽ không được tự khôi phục (`zoom` → `zôm`, `zero` → `zẻo`)
 - Ứng dụng không gõ tiếng Việt (vd. IDE): khi chuyển sang, GTV tự đổi sang chế độ tiếng Anh; khi rời đi thì quay lại tiếng Việt nếu trước đó đang gõ tiếng Việt. Thêm/bỏ trong menu V/E: *Không gõ tiếng Việt trong …* (ứng dụng đang dùng) hoặc *Ứng dụng không gõ tiếng Việt → Thêm ứng dụng…*. Trong các ứng dụng này không gõ được tiếng Việt: nếu chọn lại tiếng Việt (⌘⇧, menu bộ gõ, phím 🌐) thì GTV tự chuyển về tiếng Anh
 - Chế độ gạch chân cho các ứng dụng không hỗ trợ thay thế văn bản (mặc định bật cho Terminal, iTerm2, kitty, Alacritty, WezTerm, Warp, Ghostty); bật/tắt cho từng ứng dụng trong menu
 
@@ -71,18 +74,7 @@ Người dùng chỉ cần mở file `.dmg`, kéo **GTV** vào **Applications**,
 
 ### Ký & notarize
 
-Mặc định app được ký ad-hoc: chạy tốt trên máy build, nhưng trên máy khác macOS sẽ chặn
-("không xác định được nhà phát triển") cho tới khi người dùng vào *Quyền riêng tư & Bảo mật → Vẫn mở*.
-Để người dùng mở được ngay, cần tài khoản Apple Developer (chứng chỉ **Developer ID Application**):
-
-```bash
-# Làm 1 lần: lưu thông tin notarize vào Keychain (dùng app-specific password)
-xcrun notarytool store-credentials gtv-notary --apple-id you@example.com --team-id TEAMID1234
-
-DEVELOPER_ID="Developer ID Application: Ten Ban (TEAMID1234)" NOTARY_PROFILE=gtv-notary ./dmg.sh
-```
-
-Phiên bản app sửa ở `MARKETING_VERSION` / `CURRENT_PROJECT_VERSION` trong `project.yml`.
+Đang đi mua acc dev :(
 
 ## Cấu trúc
 

@@ -7,6 +7,10 @@ private final class Field: TextClient {
     var sel = (location: 0, length: 0)
     var readable = true               // ứng dụng có cho đọc văn bản không
     var suggestions: [String] = []    // gợi ý tự động kiểu thanh địa chỉ
+    /// Mô phỏng ứng dụng Qt (Telegram): chuỗi chèn vào trùng ký tự phím đang bấm thì bị coi là nhấn
+    /// phím thường — bỏ qua vùng cần thay, chèn tại con trỏ.
+    var qtStyle = false
+    private var currentKey: Character?
 
     let session = Session()
     var options = EngineOptions()
@@ -20,19 +24,37 @@ private final class Field: TextClient {
         return String(decoding: units[location..<location + length], as: UTF16.self)
     }
     func replaceText(location: Int, length: Int, with s: String) {
+        if qtStyle, let k = currentKey, s == String(k) || s.isEmpty {
+            // Qt: chuỗi trùng phím đang bấm -> coi như phím thường; chuỗi rỗng -> bị bỏ qua.
+            if !s.isEmpty { insertAtCursor(s) }
+            return
+        }
         units.replaceSubrange(location..<location + length, with: Array(s.utf16))
         sel = (location + s.utf16.count, 0)
         autocomplete()
     }
     func setMarkedText(_ text: String) {}
-    func insertText(_ text: String) { replaceText(location: sel.location, length: sel.length, with: text) }
+    func replaceViaMarkedText(location: Int, length: Int, with s: String) {
+        // Marked text luôn thay đúng vùng (kể cả ứng dụng Qt), sau đó chốt.
+        units.replaceSubrange(location..<location + length, with: Array(s.utf16))
+        sel = (location + s.utf16.count, 0)
+    }
+    func insertText(_ text: String) { insertAtCursor(text) }
+
+    private func insertAtCursor(_ text: String) {
+        units.replaceSubrange(sel.location..<sel.location + sel.length, with: Array(text.utf16))
+        sel = (sel.location + text.utf16.count, 0)
+        autocomplete()
+    }
 
     // MARK: Thao tác của người dùng
     func type(_ keys: String) {
         for k in keys {
+            currentKey = k
             if !session.handle(.char(k), self, options: options, forceMarked: false) {
                 insertText(String(k))        // ứng dụng tự xử lý phím
             }
+            currentKey = nil
         }
     }
 
@@ -138,6 +160,20 @@ final class SessionTests: XCTestCase {
         f.sel = (8, 0)
         f.type("f")
         XCTAssertEqual(f.text, "xin chào")
+    }
+
+    /// Telegram (Qt): "[[" từng ra "ơ[" vì chuỗi thay vào trùng ký tự phím vừa bấm.
+    func testQtStyleApp() {
+        let cases: [(String, String)] = [
+            ("[[", "["), ("]]", "]"), ("[[[", "[["), ("ww", "w"), ("t[[", "t["),
+            ("vieetj", "việt"), ("dduwowngf", "đường"), ("ass", "as"), ("aaa", "aa"),
+        ]
+        for (keys, expected) in cases {
+            let f = Field()
+            f.qtStyle = true
+            f.type(keys)
+            XCTAssertEqual(f.text, expected, keys)
+        }
     }
 
     func testBackspaceInWord() {

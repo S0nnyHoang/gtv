@@ -31,6 +31,12 @@ private final class ClientAdapter: TextClient {
     func insertText(_ text: String) {
         client?.insertText(text, replacementRange: notFound)
     }
+
+    func replaceViaMarkedText(location: Int, length: Int, with text: String) {
+        client?.setMarkedText(text, selectionRange: NSRange(location: text.utf16.count, length: 0),
+                              replacementRange: NSRange(location: location, length: length))
+        client?.insertText(text, replacementRange: notFound)
+    }
 }
 
 /// Một controller cho mỗi ô nhập liệu.

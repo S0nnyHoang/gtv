@@ -49,7 +49,9 @@ struct VChar {
     var base: UInt8          // ASCII thường (a-z) hoặc ký tự literal
     var mark: Mark = .none
     var upper = false
-    var fromW = false        // "ư" sinh ra từ phím w đứng riêng (Telex)
+    /// Phím đứng riêng đã tạo ra chữ này (Telex: w → ư, [ → ơ, ] → ư, { → Ơ, } → Ư); 0 nếu không.
+    /// Gõ lặp đúng phím đó thì trả về chính phím ấy (ww → w, [[ → [).
+    var fromKey: UInt8 = 0
 
     @inline(__always) var isVowel: Bool { Ch.isVowel(base) }
 }

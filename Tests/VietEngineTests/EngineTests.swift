@@ -93,6 +93,16 @@ final class TelexTests: XCTestCase {
     func testBrackets() {
         XCTAssertEqual(type("t]"), "tư")
         XCTAssertEqual(type("m["), "mơ")
+        XCTAssertEqual(type("["), "ơ")
+        XCTAssertEqual(type("[["), "[")
+        XCTAssertEqual(type("[[["), "[[")
+        XCTAssertEqual(type("]"), "ư")
+        XCTAssertEqual(type("]]"), "]")
+        XCTAssertEqual(type("{{"), "{")
+        XCTAssertEqual(type("}}"), "}")
+        XCTAssertEqual(type("m[["), "m[")
+        XCTAssertEqual(type("[]"), "ơ]")
+        XCTAssertEqual(type("ww"), "w")
     }
 
     func testBackspace() {
@@ -105,6 +115,27 @@ final class TelexTests: XCTestCase {
     func testSentence() {
         XCTAssertEqual(type("Tooi yeeu tieengs Vieetj, ddepj lawms!"), "Tôi yêu tiếng Việt, đẹp lắm!")
     }
+}
+
+final class InformalSpellingTests: XCTestCase {
+    func testTelex() {
+        let cases: [(String, String)] = [
+            ("zij", "zị"), ("zaayj", "zậy"), ("zui", "zui"), ("zoo", "zô"), ("zaf", "zà"),
+            ("dzaayj", "dzậy"), ("dzoo", "dzô"), ("qas", "qá"), ("Zaayj", "Zậy"),
+            ("zij zaayj", "zị zậy"),
+            // Chính tả chuẩn không bị ảnh hưởng
+            ("vaayj", "vậy"), ("quas", "quá"), ("gif", "gì"), ("asz", "a"),
+        ]
+        for (k, v) in cases { XCTAssertEqual(type(k), v, k) }
+    }
+
+    func testVNI() {
+        let o = EngineOptions(method: .vni)
+        XCTAssertEqual(type("za6y5", o), "zậy")
+        XCTAssertEqual(type("qa1", o), "qá")
+        XCTAssertEqual(type("dzo6", o), "dzô")
+    }
+
 }
 
 final class VNITests: XCTestCase {

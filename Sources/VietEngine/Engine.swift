@@ -152,10 +152,10 @@ public final class Engine {
             case Ch.a, Ch.e, Ch.o: return setHat(key, match: key, upper)
             case Ch.w: return setHorn(key, .telexW, standalone: options.method == .telex, upper)
             case Ch.d: return setStroke(key, upper)
-            case UInt8(ascii: "["): return appendHorned(Ch.o, upper: false)
-            case UInt8(ascii: "]"): return appendHorned(Ch.u, upper: false)
-            case UInt8(ascii: "{"): return appendHorned(Ch.o, upper: true)
-            case UInt8(ascii: "}"): return appendHorned(Ch.u, upper: true)
+            case UInt8(ascii: "["): return appendHorned(Ch.o, upper: false, key: key)
+            case UInt8(ascii: "]"): return appendHorned(Ch.u, upper: false, key: key)
+            case UInt8(ascii: "{"): return appendHorned(Ch.o, upper: true, key: key)
+            case UInt8(ascii: "}"): return appendHorned(Ch.u, upper: true, key: key)
             default: return .none
             }
         case .vni:
@@ -244,12 +244,12 @@ public final class Engine {
 
         if targets.isEmpty {
             guard standalone else { return .none }
-            return attempt { chars.append(VChar(base: Ch.u, mark: .horn, upper: upper, fromW: true)) }
+            return attempt { chars.append(VChar(base: Ch.u, mark: .horn, upper: upper, fromKey: Ch.w)) }
         }
 
         func want(_ i: Int) -> Mark { chars[i].base == Ch.a ? .breve : .horn }
         if targets.allSatisfy({ chars[$0].mark == want($0) }) {
-            if targets.count == 1 && chars[targets[0]].fromW {
+            if targets.count == 1 && chars[targets[0]].fromKey == Ch.w {
                 // "ww" -> "w"
                 chars[targets[0]] = VChar(base: key, upper: chars[targets[0]].upper)
                 return .undone
@@ -261,8 +261,13 @@ public final class Engine {
         return attempt { for t in targets { chars[t].mark = want(t) } }
     }
 
-    private func appendHorned(_ base: UInt8, upper: Bool) -> TResult {
-        attempt { chars.append(VChar(base: base, mark: .horn, upper: upper)) }
+    /// Telex `[` `]` `{` `}` → ơ ư Ơ Ư. Gõ lặp ngay sau đó thì trả về dấu ngoặc ([[ → [).
+    private func appendHorned(_ base: UInt8, upper: Bool, key: UInt8) -> TResult {
+        if let last = chars.last, last.fromKey == key {
+            chars[chars.count - 1] = VChar(base: key)
+            return .undone
+        }
+        return attempt { chars.append(VChar(base: base, mark: .horn, upper: upper, fromKey: key)) }
     }
 
     private func setStroke(_ key: UInt8, _ upper: Bool) -> TResult {
@@ -360,10 +365,11 @@ public final class Engine {
         if p.vowelEnd == p.initEnd {
             // Không có nguyên âm ("đ", "VN"...): không bao giờ khôi phục.
             if strict { return true }
-            return p.vowelEnd == n && VTable.initialPrefixes.contains(consonants(0..<n))
+            let ini = consonants(0..<n)
+            return p.vowelEnd == n && (VTable.initialPrefixes.contains(ini) || isInformalInitial(ini))
         }
         let ini = consonants(0..<p.initEnd)
-        guard VTable.initials.contains(ini) else { return false }
+        guard VTable.initials.contains(ini) || isInformalInitial(ini) else { return false }
         let fin = consonants(p.vowelEnd..<n)
         guard fin.isEmpty || VTable.finals.contains(fin) else { return false }
 
@@ -394,6 +400,10 @@ public final class Engine {
         }
         let base = vowelString(p.initEnd..<p.vowelEnd, marked: false)
         return fin.isEmpty ? VTable.basePrefixes.contains(base) : VTable.baseCanClose.contains(base)
+    }
+
+    private func isInformalInitial(_ ini: String) -> Bool {
+        VTable.informalInitials.contains(ini)
     }
 
     // MARK: - Hiển thị

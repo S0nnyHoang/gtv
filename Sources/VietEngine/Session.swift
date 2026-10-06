@@ -8,6 +8,8 @@ public protocol TextClient: AnyObject {
     func replaceText(location: Int, length: Int, with text: String)
     func setMarkedText(_ text: String)
     func insertText(_ text: String)
+    /// Thay một đoạn bằng `text` qua marked text rồi chốt ngay (dùng cho ứng dụng Qt, xem `replace`).
+    func replaceViaMarkedText(location: Int, length: Int, with text: String)
 }
 
 public enum Key: Equatable {
@@ -106,12 +108,12 @@ public final class Session {
 
     private func perform(_ action: Action, _ client: TextClient, retry ch: Character?) -> Bool {
         guard case let .replace(old, new) = action else { return false }
-        if replace(old, new, client) { return true }
+        if replace(old, new, client, typed: ch) { return true }
         // Không khớp với màn hình: đọc lại từ trước con trỏ rồi xử lý phím này tiếp từ đó.
         resync(client)
         guard let ch else { engine.reset(); return false }
         if let a = engine.process(ch), case let .replace(o, n) = a {
-            if replace(o, n, client) { return true }
+            if replace(o, n, client, typed: ch) { return true }
             engine.reset()
         }
         return false
@@ -131,7 +133,8 @@ public final class Session {
         if engine.seed(word) { anchor = sel.location - word.utf16.count }
     }
 
-    private func replace(_ old: String, _ new: String, _ client: TextClient) -> Bool {
+    /// `typed`: ký tự của phím vừa bấm (nếu việc thay đổi do phím đó gây ra).
+    private func replace(_ old: String, _ new: String, _ client: TextClient, typed: Character? = nil) -> Bool {
         let oldLen = old.utf16.count
         guard let sel = client.selectedRange(), sel.location >= oldLen,
               sel.location == anchor + oldLen else { return false }
@@ -147,9 +150,18 @@ public final class Session {
             ni = new.index(after: ni)
         }
         let deleteLen = oldLen - common
+        let insert = String(new[ni...])
+        let start = sel.location - deleteLen
         // Vùng đang bôi đen sau từ (gợi ý tự động) cũng bị thay luôn.
-        client.replaceText(location: sel.location - deleteLen, length: deleteLen + sel.length,
-                           with: String(new[ni...]))
+        let length = deleteLen + sel.length
+        if let typed, insert == String(typed), length > 0 {
+            // Chuỗi thay vào trùng ký tự phím vừa bấm (vd. "ơ" + "[" -> "[", "ư" + "w" -> "w"): ứng dụng Qt
+            // (Telegram...) coi đó là nhấn phím thường, bỏ qua vùng cần thay (và bỏ qua cả lệnh thay bằng
+            // chuỗi rỗng) -> "ơ[". Đi qua marked text thì Qt xử lý theo đường của bộ gõ.
+            client.replaceViaMarkedText(location: start, length: length, with: insert)
+        } else {
+            client.replaceText(location: start, length: length, with: insert)
+        }
         return true
     }
 }
