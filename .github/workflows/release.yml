@@ -1,4 +1,7 @@
 # Build DMG
+#
+# Release notes come from the `## <version>` section of CHANGELOG.md (version = MARKETING_VERSION in
+# project.yml). On main, a missing section stops the run instead of publishing an empty release.
 
 name: Release
 
@@ -75,6 +78,29 @@ jobs:
           echo "### $title" >> "$GITHUB_STEP_SUMMARY"
           echo "DMG: \`$(basename "$dmg")\` ($(du -h "$dmg" | cut -f1))" >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Release notes from CHANGELOG.md
+        env:
+          VERSION: ${{ steps.meta.outputs.version }}
+          TAG: ${{ steps.meta.outputs.tag }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if scripts/release_notes.sh "$VERSION" > build/notes.md; then
+            echo "Release notes: section $VERSION of CHANGELOG.md" >> "$GITHUB_STEP_SUMMARY"
+          elif [ "$GITHUB_REF_NAME" = "main" ]; then
+            echo "::error file=CHANGELOG.md::No '## $VERSION' section in CHANGELOG.md. Add release notes for this version, then merge again."
+            exit 1
+          else
+            echo "Test build from branch \`$GITHUB_REF_NAME\` (commit ${GITHUB_SHA::7})." > build/notes.md
+          fi
+          # Compare link against the latest non-prerelease release.
+          prev="$(gh release list --exclude-pre-releases --limit 20 --json tagName -q '.[].tagName' \
+                  | grep -vx "$TAG" | head -1 || true)"
+          if [ -n "$prev" ]; then
+            printf '\n**Full changelog:** %s/%s/compare/%s...%s\n' \
+              "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$prev" "$TAG" >> build/notes.md
+          fi
+          cat build/notes.md
+
       - name: Attack DMG to run
         uses: actions/upload-artifact@v4
         with:
@@ -93,9 +119,10 @@ jobs:
         run: |
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" "$DMG" --clobber
-            echo "Release $TAG đã có: thay file DMG bằng bản mới." >> "$GITHUB_STEP_SUMMARY"
+            gh release edit "$TAG" --notes-file build/notes.md
+            echo "Release $TAG đã có: thay file DMG và cập nhật release note." >> "$GITHUB_STEP_SUMMARY"
           else
-            flags=(--title "$TITLE" --target "$GITHUB_SHA" --generate-notes)
+            flags=(--title "$TITLE" --target "$GITHUB_SHA" --notes-file build/notes.md)
             [ "$PRERELEASE" = "true" ] && flags+=(--prerelease)
             gh release create "$TAG" "$DMG" "${flags[@]}"
             echo "Đã tạo release $TAG." >> "$GITHUB_STEP_SUMMARY"

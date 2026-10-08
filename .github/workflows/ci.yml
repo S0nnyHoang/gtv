@@ -29,6 +29,15 @@ jobs:
           brew install xcodegen
           xcodegen
 
+      - name: Check CHANGELOG.md
+        run: |
+          version="$(sed -nE 's/^ *MARKETING_VERSION: *"?([^"]+)"?.*/\1/p' project.yml | head -1)"
+          if scripts/release_notes.sh "$version" > /dev/null; then
+            echo "CHANGELOG.md has a section for $version."
+          else
+            echo "::warning file=CHANGELOG.md::No '## $version' section in CHANGELOG.md. The Release workflow will stop on main without release notes."
+          fi
+
       - name: Test
         run: |
           set -o pipefail
