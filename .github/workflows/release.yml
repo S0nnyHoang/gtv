@@ -1,0 +1,102 @@
+# Build DMG
+
+name: Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: "Upload to Releases (branches other than main will be pre-release)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build DMG
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select latest Xcode
+        run: |
+          latest="$(ls -d /Applications/Xcode_*.app 2>/dev/null | sort -V | tail -1)"
+          [ -n "$latest" ] && sudo xcode-select -s "$latest"
+          xcodebuild -version
+
+      - name: Generate Xcode project from project.yml
+        run: |
+          brew install xcodegen
+          xcodegen
+
+      - name: Test
+        run: |
+          set -o pipefail
+          xcodebuild -project GTV.xcodeproj -scheme GTV -derivedDataPath build/dd test \
+            | grep -E "Executed|error:|TEST (SUCCEEDED|FAILED)|BUILD (SUCCEEDED|FAILED)"
+
+      - name: Build DMG
+        run: ./dmg.sh
+
+      - name: Version info
+        id: meta
+        run: |
+          version="$(defaults read "$PWD/build/GTV.app/Contents/Info.plist" CFBundleShortVersionString)"
+          dmg="build/GTV-$version.dmg"
+          if [ "$GITHUB_REF_NAME" = "main" ]; then
+            tag="v$version"
+            title="GTV $version"
+            prerelease=false
+          else
+            branch="$(printf '%s' "$GITHUB_REF_NAME" | tr -c 'A-Za-z0-9._-' '-')"
+            suffix="$branch-${GITHUB_SHA::7}"
+            tag="v$version-$suffix"
+            title="GTV $version ($GITHUB_REF_NAME @ ${GITHUB_SHA::7})"
+            prerelease=true
+            mv "$dmg" "build/GTV-$version-$suffix.dmg"
+            dmg="build/GTV-$version-$suffix.dmg"
+          fi
+          {
+            echo "version=$version"
+            echo "dmg=$dmg"
+            echo "tag=$tag"
+            echo "title=$title"
+            echo "prerelease=$prerelease"
+          } >> "$GITHUB_OUTPUT"
+          echo "### $title" >> "$GITHUB_STEP_SUMMARY"
+          echo "DMG: \`$(basename "$dmg")\` ($(du -h "$dmg" | cut -f1))" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Attack DMG to run
+        uses: actions/upload-artifact@v4
+        with:
+          name: GTV-${{ steps.meta.outputs.version }}-${{ github.ref_name }}
+          path: ${{ steps.meta.outputs.dmg }}
+          if-no-files-found: error
+
+      - name: Upload to Releases
+        if: github.event_name == 'push' || inputs.publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.meta.outputs.tag }}
+          TITLE: ${{ steps.meta.outputs.title }}
+          DMG: ${{ steps.meta.outputs.dmg }}
+          PRERELEASE: ${{ steps.meta.outputs.prerelease }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$DMG" --clobber
+            echo "Release $TAG đã có: thay file DMG bằng bản mới." >> "$GITHUB_STEP_SUMMARY"
+          else
+            flags=(--title "$TITLE" --target "$GITHUB_SHA" --generate-notes)
+            [ "$PRERELEASE" = "true" ] && flags+=(--prerelease)
+            gh release create "$TAG" "$DMG" "${flags[@]}"
+            echo "Đã tạo release $TAG." >> "$GITHUB_STEP_SUMMARY"
+          fi

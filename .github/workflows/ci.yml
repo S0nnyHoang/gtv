@@ -1,0 +1,36 @@
+# RUn test for all PRs
+name: CI
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  # Cancel last run when have new commit to PR
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Test
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select latest Xcode
+        run: |
+          latest="$(ls -d /Applications/Xcode_*.app 2>/dev/null | sort -V | tail -1)"
+          [ -n "$latest" ] && sudo xcode-select -s "$latest"
+          xcodebuild -version
+
+      - name: Generate Xcode project from project.yml
+        run: |
+          brew install xcodegen
+          xcodegen
+
+      - name: Test
+        run: |
+          set -o pipefail
+          xcodebuild -project GTV.xcodeproj -scheme GTV -derivedDataPath build/dd test \
+            | grep -E "Test Case|Executed|error:|TEST (SUCCEEDED|FAILED)|BUILD (SUCCEEDED|FAILED)"
