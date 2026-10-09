@@ -1,5 +1,8 @@
 # Build DMG
 #
+# Auto-update: for regular (non-pre-) releases, an EdDSA-signed Sparkle appcast.xml is attached next to the
+# DMG; GTV reads it from releases/latest/download/appcast.xml. Requires the SPARKLE_PRIVATE_KEY secret.
+#
 # Release notes come from the `## <version>` section of CHANGELOG.md (version = MARKETING_VERSION in
 # project.yml). On main, a missing section stops the run instead of publishing an empty release.
 
@@ -101,6 +104,31 @@ jobs:
           fi
           cat build/notes.md
 
+      - name: Sparkle appcast
+        if: steps.meta.outputs.prerelease == 'false'
+        env:
+          SPARKLE_PRIVATE_KEY: ${{ secrets.SPARKLE_PRIVATE_KEY }}
+          DMG: ${{ steps.meta.outputs.dmg }}
+          TAG: ${{ steps.meta.outputs.tag }}
+        run: |
+          if [ -z "$SPARKLE_PRIVATE_KEY" ]; then
+            echo "::warning::SPARKLE_PRIVATE_KEY secret is not set: no appcast.xml, auto-update will not see this release."
+            exit 0
+          fi
+          # Sparkle tools (sign_update), same version as the Sparkle package in project.yml
+          sparkle_version="$(sed -nE 's/^ *exactVersion: *"?([0-9.]+)"?.*/\1/p' project.yml | head -1)"
+          tools="$RUNNER_TEMP/sparkle"
+          mkdir -p "$tools"
+          curl -sSfL "https://github.com/sparkle-project/Sparkle/releases/download/$sparkle_version/Sparkle-$sparkle_version.tar.xz" \
+            | tar -xJ -C "$tools"
+          key_file="$RUNNER_TEMP/sparkle_key"
+          printf '%s' "$SPARKLE_PRIVATE_KEY" > "$key_file"
+          url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/$TAG/$(basename "$DMG")"
+          SPARKLE_BIN="$tools/bin" SPARKLE_KEY_FILE="$key_file" scripts/make_appcast.sh "$DMG" "$url" > build/appcast.xml
+          rm -f "$key_file"
+          cat build/appcast.xml
+          echo "appcast.xml signed (Sparkle $sparkle_version)" >> "$GITHUB_STEP_SUMMARY"
+
       - name: Attack DMG to run
         uses: actions/upload-artifact@v4
         with:
@@ -117,13 +145,15 @@ jobs:
           DMG: ${{ steps.meta.outputs.dmg }}
           PRERELEASE: ${{ steps.meta.outputs.prerelease }}
         run: |
+          files=("$DMG")
+          [ -f build/appcast.xml ] && files+=(build/appcast.xml)
           if gh release view "$TAG" >/dev/null 2>&1; then
-            gh release upload "$TAG" "$DMG" --clobber
+            gh release upload "$TAG" "${files[@]}" --clobber
             gh release edit "$TAG" --notes-file build/notes.md
             echo "Release $TAG đã có: thay file DMG và cập nhật release note." >> "$GITHUB_STEP_SUMMARY"
           else
             flags=(--title "$TITLE" --target "$GITHUB_SHA" --notes-file build/notes.md)
             [ "$PRERELEASE" = "true" ] && flags+=(--prerelease)
-            gh release create "$TAG" "$DMG" "${flags[@]}"
+            gh release create "$TAG" "${files[@]}" "${flags[@]}"
             echo "Đã tạo release $TAG." >> "$GITHUB_STEP_SUMMARY"
           fi

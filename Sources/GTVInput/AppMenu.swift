@@ -11,7 +11,7 @@ enum AppMenu {
         case markedApp = 40, markedAlways
         case hotkey = 50   // 50 + ToggleHotkey.rawValue
         case excludeCurrent = 60, addExcluded
-        case showStatusIcon = 70, playSwitchSound, selectAtLogin
+        case showStatusIcon = 70, playSwitchSound, selectAtLogin, checkForUpdates, autoCheckUpdates
         case quit = 99
         case removeExcluded = 1000   // 1000 + vị trí trong excludedSorted()
     }
@@ -58,6 +58,9 @@ enum AppMenu {
         // giữ tên trong bộ đệm tới khi đăng xuất, sau mỗi lần cập nhật sẽ hiện phiên bản cũ.)
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"
         header("Phiên bản \(version)")
+        if Updater.shared.isAvailable {
+            add("Kiểm tra cập nhật…", .checkForUpdates, false)
+        }
 
         let hint = s.hotkey == .none ? "" : "   (\(s.hotkey.title.prefix(2)))"
         add("Gõ tiếng Việt" + hint, .enabled, Modes.shared.vietnamese && InputSources.isGTVSelected)
@@ -109,6 +112,9 @@ enum AppMenu {
 
         menu.addItem(.separator())
         add("Chọn GTV khi đăng nhập", .selectAtLogin, s.selectAtLogin)
+        if Updater.shared.isAvailable {
+            add("Tự động kiểm tra cập nhật", .autoCheckUpdates, Updater.shared.automaticallyChecks)
+        }
         add("Hiện biểu tượng GTV trên thanh menu", .showStatusIcon, s.showStatusIcon)
         add("Thoát GTV", .quit, false)
         return menu
@@ -161,6 +167,11 @@ enum AppMenu {
             s.playSwitchSound.toggle()
         case .selectAtLogin:
             s.selectAtLogin.toggle()
+        case .checkForUpdates:
+            // Đợi menu đóng hẳn rồi mới mở cửa sổ của Sparkle.
+            DispatchQueue.main.async { Updater.shared.checkForUpdates() }
+        case .autoCheckUpdates:
+            Updater.shared.automaticallyChecks.toggle()
         case .quit:
             InputSources.selectSystemKeyboard()
             NSApp.terminate(nil)

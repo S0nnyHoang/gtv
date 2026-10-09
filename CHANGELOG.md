@@ -4,6 +4,13 @@ Mỗi phiên bản là một mục `## <phiên bản> — <ngày>`. Nội dung c
 note trên trang GitHub Releases (workflow `Release`). Phiên bản phải khớp `MARKETING_VERSION` trong
 `project.yml`.
 
+## 1.11 — 2026-10-09
+
+### Tính năng mới
+- Tự động cập nhật: GTV tự kiểm tra bản mới khi khởi động và mỗi 24 giờ. Khi có bản mới, hiện thông
+  báo kèm nội dung cập nhật, có thể cài ngay, bỏ qua phiên bản đó hoặc nhắc sau.
+- Menu GTV: thêm "Kiểm tra cập nhật…" và tuỳ chọn "Tự động kiểm tra cập nhật".
+
 ## 1.10.5 — 2026-10-06
 
 ### Sửa lỗi

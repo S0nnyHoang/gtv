@@ -67,13 +67,17 @@ final class Settings {
     }
 
     /// Chạy GTV.app (launcher) với tham số — việc đăng ký "Mở khi đăng nhập" phải do chính GTV.app làm.
-    static func runLauncher(_ arguments: [String]) {
-        // Ưu tiên bản trong Applications (máy phát triển còn có các bản build khác cùng bundle ID).
+    /// Vị trí GTV.app. Ưu tiên bản trong Applications (máy phát triển còn có các bản build khác cùng
+    /// bundle ID).
+    static func launcherURL() -> URL? {
         let fm = FileManager.default
         let candidates = ["/Applications/GTV.app", fm.homeDirectoryForCurrentUser.path + "/Applications/GTV.app"]
             .map { URL(fileURLWithPath: $0) }.filter { fm.fileExists(atPath: $0.path) }
-        guard let app = candidates.first ?? NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.gtv.GTV"),
-              let exe = Bundle(url: app)?.executableURL else { return }
+        return candidates.first ?? NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.gtv.GTV")
+    }
+
+    static func runLauncher(_ arguments: [String]) {
+        guard let app = launcherURL(), let exe = Bundle(url: app)?.executableURL else { return }
         let p = Process()
         p.executableURL = exe
         p.arguments = arguments

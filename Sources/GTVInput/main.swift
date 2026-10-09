@@ -10,6 +10,7 @@ let app = NSApplication.shared
 app.setActivationPolicy(.accessory)   // không hiện trên Dock
 StatusController.shared.start()
 _ = Modes.shared
+Updater.shared.start()
 withExtendedLifetime(server) {
     app.run()
 }

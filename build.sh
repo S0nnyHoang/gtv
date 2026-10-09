@@ -13,7 +13,8 @@ if command -v xcodegen >/dev/null; then xcodegen -q; fi
 SIGN_ARGS=()
 if [ -n "${DEVELOPER_ID:-}" ]; then
     TEAM="$(sed -E 's/.*\(([A-Z0-9]+)\)$/\1/' <<<"$DEVELOPER_ID")"
-    SIGN_ARGS=(CODE_SIGN_IDENTITY="$DEVELOPER_ID" DEVELOPMENT_TEAM="$TEAM" OTHER_CODE_SIGN_FLAGS=--timestamp)
+    SIGN_ARGS=(CODE_SIGN_IDENTITY="$DEVELOPER_ID" DEVELOPMENT_TEAM="$TEAM" OTHER_CODE_SIGN_FLAGS=--timestamp
+               ENABLE_HARDENED_RUNTIME=YES)
 fi
 
 xcodebuild -project GTV.xcodeproj -scheme GTV -configuration Release \

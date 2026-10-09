@@ -30,5 +30,13 @@
 	<true/>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>SUFeedURL</key>
+	<string>https://github.com/S0nnyHoang/gtv/releases/latest/download/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>CpAFY8ae8FhSh0TFeVnXbMNpQ4VR7i3KOAREz7dZ+OE=</string>
+	<key>SUEnableAutomaticChecks</key>
+	<true/>
+	<key>SUScheduledCheckInterval</key>
+	<integer>86400</integer>
 </dict>
 </plist>

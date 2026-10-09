@@ -7,17 +7,27 @@ options:
   createIntermediateGroups: true
   developmentLanguage: vi
 
+packages:
+  # Tự động cập nhật (https://sparkle-project.org)
+  Sparkle:
+    url: https://github.com/sparkle-project/Sparkle
+    exactVersion: 2.10.0
+
 settings:
   base:
-    MARKETING_VERSION: "1.10.5"
-    CURRENT_PROJECT_VERSION: "26"
+    MARKETING_VERSION: "1.11"
+    # Số build = phiên bản: Sparkle so sánh CFBundleVersion (hiểu dạng 1.11.1), chỉ cần tăng MARKETING_VERSION.
+    CURRENT_PROJECT_VERSION: "$(MARKETING_VERSION)"
     SWIFT_VERSION: "5.0"
     # Mặc định ký ad-hoc (chạy được trên máy build). Khi phát hành, build.sh truyền
     # DEVELOPMENT_TEAM + CODE_SIGN_IDENTITY "Developer ID Application" để notarize.
     CODE_SIGN_STYLE: Manual
     CODE_SIGN_IDENTITY: "-"
     DEVELOPMENT_TEAM: ""
-    ENABLE_HARDENED_RUNTIME: YES
+    # Tắt khi ký ad-hoc: Hardened Runtime chỉ cho nạp thư viện cùng Team ID, mà bản ad-hoc không có Team ID
+    # nên Sparkle.framework bị từ chối ("not valid for use in process"). build.sh bật lại khi ký Developer ID
+    # (bắt buộc để notarize; khi đó app và Sparkle cùng Team ID).
+    ENABLE_HARDENED_RUNTIME: NO
     DEAD_CODE_STRIPPING: YES
   configs:
     Release:
@@ -50,6 +60,7 @@ targets:
         buildPhase: resources
     dependencies:
       - target: VietEngine
+      - package: Sparkle
       - sdk: InputMethodKit.framework
       - sdk: Carbon.framework
       - sdk: ServiceManagement.framework
