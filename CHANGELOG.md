@@ -4,6 +4,12 @@ Mỗi phiên bản là một mục `## <phiên bản> — <ngày>`. Nội dung c
 note trên trang GitHub Releases (workflow `Release`). Phiên bản phải khớp `MARKETING_VERSION` trong
 `project.yml`.
 
+## 1.11.1 — 2026-10-12
+
+### Sửa lỗi
+- Xoá lùi vào một từ đã gõ xong rồi gõ tiếp dấu không có tác dụng (vd. `hoir ` → xoá còn `hoi` → gõ `r`
+  ra `hoir` thay vì `hỏi`).
+
 ## 1.11 — 2026-10-09
 
 ### Tính năng mới

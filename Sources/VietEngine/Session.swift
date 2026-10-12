@@ -26,12 +26,16 @@ public final class Session {
     private var marked = false   // từ hiện tại dùng marked text (gạch chân)
     private var anchor = 0       // vị trí bắt đầu của từ đang gõ
     private var qtApp = false    // ô nhập liệu thuộc ứng dụng Qt (xem `replace`)
+    /// Vừa xoá lùi khi không có từ nào đang gõ (vd. "hoir " → xoá " " và "r" → còn "hoi"): ở phím chữ tiếp
+    /// theo, đọc lại từ trước con trỏ để gõ tiếp (gõ "r" → "hỏi") thay vì bắt đầu từ mới.
+    private var continueWordOnNextChar = false
 
     public init() {}
 
     public func reset() {
         engine.reset()
         marked = false
+        continueWordOnNextChar = false
     }
 
     /// Trả về true nếu bộ gõ đã xử lý phím (ứng dụng không cần xử lý nữa).
@@ -42,15 +46,20 @@ public final class Session {
         switch key {
         case .other:
             breakWord(client)
+            continueWordOnNextChar = false
             return false
         case .backspace:
-            return backspace(client)
+            let handled = backspace(client)
+            if engine.isEmpty && !marked { continueWordOnNextChar = true }
+            return handled
         case let .char(ch):
             if engine.isEmpty {
                 engine.options = options
                 let sel = client.selectedRange()
                 marked = forceMarked || sel == nil
                 anchor = sel?.location ?? 0
+                if continueWordOnNextChar && !marked { resync(client) }
+                continueWordOnNextChar = false
             } else if !marked && !inSync(client.selectedRange()) {
                 resync(client)
             }

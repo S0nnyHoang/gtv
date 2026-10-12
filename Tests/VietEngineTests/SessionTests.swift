@@ -194,6 +194,42 @@ final class SessionTests: XCTestCase {
         }
     }
 
+    /// Xoá lùi vào một từ đã gõ xong rồi gõ tiếp: "hoirr " → xoá " ", "r" → "hoi" → gõ "r" → "hỏi".
+    func testContinueWordAfterBackspace() {
+        let f = Field()
+        f.type("hoirr ")
+        XCTAssertEqual(f.text, "hoir ")
+        f.backspace(); f.backspace()
+        XCTAssertEqual(f.text, "hoi")
+        f.type("r")
+        XCTAssertEqual(f.text, "hỏi")
+
+        let g = Field()
+        g.type("viet ")
+        g.backspace(); g.backspace()          // "vie"
+        g.type("etj")
+        XCTAssertEqual(g.text, "việt")
+
+        let h = Field()
+        h.type("toi ")
+        h.backspace()                         // xoá dấu cách, còn "toi"
+        h.type("f")
+        XCTAssertEqual(h.text, "tòi")
+
+        // Gõ sau dấu cách vẫn là từ mới, không nối vào từ trước
+        let k = Field()
+        k.type("toi f")
+        XCTAssertEqual(k.text, "toi f")
+
+        // Ứng dụng không cho đọc văn bản: không đọc lại được, gõ như từ mới (không ghi sai chỗ)
+        let m = Field()
+        m.readable = false
+        m.type("hoirr ")
+        m.backspace(); m.backspace()
+        m.type("r")
+        XCTAssertEqual(m.text, "hoir")
+    }
+
     func testBackspaceInWord() {
         let f = Field()
         f.type("vieetj")

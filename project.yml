@@ -15,7 +15,7 @@ packages:
 
 settings:
   base:
-    MARKETING_VERSION: "1.11"
+    MARKETING_VERSION: "1.11.1"
     # Số build = phiên bản: Sparkle so sánh CFBundleVersion (hiểu dạng 1.11.1), chỉ cần tăng MARKETING_VERSION.
     CURRENT_PROJECT_VERSION: "$(MARKETING_VERSION)"
     SWIFT_VERSION: "5.0"
