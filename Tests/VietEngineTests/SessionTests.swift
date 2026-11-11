@@ -13,6 +13,9 @@ private final class Field: TextClient {
     /// Mô phỏng ô nhập liệu trong trang web (Chrome, Electron): marked text bỏ qua vùng cần thay,
     /// đặt tại con trỏ; thay trực tiếp thì đúng.
     var chromiumStyle = false
+    /// Mô phỏng terminal: không cho biết con trỏ, không đọc/thay được; mọi ký tự gửi xuống shell ngay,
+    /// DEL (0x7f) xoá ký tự cuối dòng lệnh.
+    var terminalStyle = false
     private var currentKey: Character?
 
     let session = Session()
@@ -21,12 +24,13 @@ private final class Field: TextClient {
     var text: String { String(decoding: units, as: UTF16.self) }
 
     // MARK: TextClient
-    func selectedRange() -> (location: Int, length: Int)? { sel }
+    func selectedRange() -> (location: Int, length: Int)? { terminalStyle ? nil : sel }
     func text(location: Int, length: Int) -> String? {
-        guard readable, location >= 0, location + length <= units.count else { return nil }
+        guard readable, !terminalStyle, location >= 0, location + length <= units.count else { return nil }
         return String(decoding: units[location..<location + length], as: UTF16.self)
     }
     func replaceText(location: Int, length: Int, with s: String) {
+        if terminalStyle { insertAtCursor(s); return }   // terminal bỏ qua vùng cần thay
         if qtStyle, let k = currentKey, s == String(k) || s.isEmpty {
             // Qt: chuỗi trùng phím đang bấm -> coi như phím thường; chuỗi rỗng -> bị bỏ qua.
             if !s.isEmpty { insertAtCursor(s) }
@@ -46,6 +50,13 @@ private final class Field: TextClient {
     func insertText(_ text: String) { insertAtCursor(text) }
 
     private func insertAtCursor(_ text: String) {
+        if terminalStyle {
+            var line = self.text
+            for c in text { if c == "\u{7f}" { if !line.isEmpty { line.removeLast() } } else { line.append(c) } }
+            units = Array(line.utf16)
+            sel = (units.count, 0)
+            return
+        }
         units.replaceSubrange(sel.location..<sel.location + sel.length, with: Array(text.utf16))
         sel = (sel.location + text.utf16.count, 0)
         autocomplete()
@@ -55,7 +66,8 @@ private final class Field: TextClient {
     func type(_ keys: String) {
         for k in keys {
             currentKey = k
-            if !session.handle(.char(k), self, options: options, forceMarked: false, qtApp: qtStyle) {
+            if !session.handle(.char(k), self, options: options, forceMarked: false, qtApp: qtStyle,
+                              terminal: terminalStyle) {
                 insertText(String(k))        // ứng dụng tự xử lý phím
             }
             currentKey = nil
@@ -63,7 +75,9 @@ private final class Field: TextClient {
     }
 
     func backspace() {
-        if session.handle(.backspace, self, options: options, forceMarked: false, qtApp: qtStyle) { return }
+        if session.handle(.backspace, self, options: options, forceMarked: false, qtApp: qtStyle,
+                          terminal: terminalStyle) { return }
+        if terminalStyle { insertAtCursor("\u{7f}"); return }
         if sel.length > 0 {
             units.removeSubrange(sel.location..<sel.location + sel.length)
         } else if sel.location > 0 {
@@ -238,5 +252,33 @@ final class SessionTests: XCTestCase {
         XCTAssertEqual(f.text, "vi")
         f.type("eets")
         XCTAssertEqual(f.text, "viết")
+    }
+
+    /// Terminal: gửi DEL + chữ mới, không gạch chân, không cần đọc màn hình.
+    func testTerminal() {
+        let f = Field()
+        f.terminalStyle = true
+        f.type("Tooi yeeu tieengs Vieetj, ddepj lawms! ")
+        XCTAssertEqual(f.text, "Tôi yêu tiếng Việt, đẹp lắm! ")
+        f.type("hoaf ")   // dấu đặt lại vị trí khi gõ tiếp
+        XCTAssertEqual(f.text, "Tôi yêu tiếng Việt, đẹp lắm! hòa ")
+
+        let v = Field()
+        v.terminalStyle = true
+        v.options.method = .vni
+        v.type("tie6ng1 Vie65t git status")
+        XCTAssertEqual(v.text, "tiếng Việt git status")
+
+        // Xoá lùi giữa từ rồi gõ tiếp; tự khôi phục từ tiếng Anh; "ww" -> "w"
+        let b = Field()
+        b.terminalStyle = true
+        b.type("vieetj")
+        b.backspace(); b.backspace()
+        b.type("eets ls -la ww")
+        XCTAssertEqual(b.text, "viết ls -la w")
+        let r = Field()
+        r.terminalStyle = true
+        r.type("cd tesst ")
+        XCTAssertEqual(r.text, "cd test ")
     }
 }

@@ -38,11 +38,12 @@ final class Settings {
 
     private let defaults = UserDefaults.standard
 
-    /// Ứng dụng mặc định dùng chế độ gạch chân (marked text): các terminal không hỗ trợ
-    /// thay thế văn bản đã nhập.
-    static let defaultMarkedApps = [
+    /// Terminal: không thay được chữ đã nhập, mặc định gõ ở chế độ terminal (gửi xoá lùi + chữ mới,
+    /// xem `Session`). Trước 1.11.2 các ứng dụng này mặc định dùng gạch chân.
+    static let defaultTerminalApps = [
         "com.apple.Terminal", "com.googlecode.iterm2", "net.kovidgoyal.kitty", "io.alacritty",
-        "com.github.wez.wezterm", "dev.warp.Warp-Stable", "com.mitchellh.ghostty",
+        "com.github.wez.wezterm", "dev.warp.Warp-Stable", "com.mitchellh.ghostty", "co.zeit.hyper",
+        "org.tabby", "com.raphaelamorim.rio",
     ]
 
     private(set) var options: EngineOptions
@@ -53,6 +54,7 @@ final class Settings {
         didSet { defaults.set(hotkey.rawValue, forKey: "hotkey"); changed() }
     }
     private(set) var markedApps: Set<String>
+    private(set) var terminalApps: Set<String>
     /// Phát âm báo của hệ thống khi người dùng chuyển Anh/Việt (phím tắt, menu).
     var playSwitchSound: Bool {
         didSet { defaults.set(playSwitchSound, forKey: "playSwitchSound") }
@@ -99,7 +101,8 @@ final class Settings {
             "autoRestore": true,
             "alwaysMarked": false,
             "hotkey": ToggleHotkey.commandShift.rawValue,
-            "markedApps": Settings.defaultMarkedApps,
+            "markedApps": [String](),
+            "terminalApps": Settings.defaultTerminalApps,
             "excludedApps": [String](),
             "showStatusIcon": false,
             "playSwitchSound": true,
@@ -108,6 +111,16 @@ final class Settings {
         alwaysMarked = defaults.bool(forKey: "alwaysMarked")
         hotkey = ToggleHotkey(rawValue: defaults.integer(forKey: "hotkey")) ?? .commandShift
         markedApps = Set(defaults.stringArray(forKey: "markedApps") ?? [])
+        terminalApps = Set(defaults.stringArray(forKey: "terminalApps") ?? [])
+        // Bản cũ lưu cả danh sách gạch chân mặc định (các terminal) khi người dùng bật/tắt một ứng dụng:
+        // bỏ các terminal đó ra để chúng dùng chế độ terminal mới (một lần).
+        if !defaults.bool(forKey: "migratedTerminalMode") {
+            defaults.set(true, forKey: "migratedTerminalMode")
+            if defaults.object(forKey: "markedApps") != nil {
+                markedApps.subtract(Settings.defaultTerminalApps)
+                defaults.set(markedApps.sorted(), forKey: "markedApps")
+            }
+        }
         showStatusIcon = defaults.bool(forKey: "showStatusIcon")
         playSwitchSound = defaults.bool(forKey: "playSwitchSound")
         selectAtLogin = defaults.bool(forKey: "selectAtLogin")
@@ -139,6 +152,17 @@ final class Settings {
         guard !bundleID.isEmpty else { return }
         if markedApps.contains(bundleID) { markedApps.remove(bundleID) } else { markedApps.insert(bundleID) }
         defaults.set(markedApps.sorted(), forKey: "markedApps")
+    }
+
+    /// Gạch chân (nếu bật) được ưu tiên hơn chế độ terminal.
+    func useTerminalMode(for bundleID: String) -> Bool {
+        terminalApps.contains(bundleID)
+    }
+
+    func toggleTerminalMode(for bundleID: String) {
+        guard !bundleID.isEmpty else { return }
+        if terminalApps.contains(bundleID) { terminalApps.remove(bundleID) } else { terminalApps.insert(bundleID) }
+        defaults.set(terminalApps.sorted(), forKey: "terminalApps")
     }
 
     func setExcluded(_ bundleIDs: [String], _ excluded: Bool) {

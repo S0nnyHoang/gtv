@@ -8,7 +8,7 @@ enum AppMenu {
         case telex = 10, vni, simpleTelex
         case unicode = 20, combining, tcvn3
         case modernTone = 30, autoRestore
-        case markedApp = 40, markedAlways
+        case markedApp = 40, markedAlways, terminalApp
         case hotkey = 50   // 50 + ToggleHotkey.rawValue
         case excludeCurrent = 60, addExcluded
         case showStatusIcon = 70, playSwitchSound, selectAtLogin, checkForUpdates, autoCheckUpdates
@@ -107,6 +107,11 @@ enum AppMenu {
                          s.markedApps.contains(appBundleID))
             i.representedObject = appBundleID
             menu.addItem(i)
+            let t = item("Chế độ terminal cho \(appName(appBundleID))", Tag.terminalApp.rawValue,
+                         s.terminalApps.contains(appBundleID))
+            t.toolTip = "Cho terminal: gõ không gạch chân bằng cách gửi xoá lùi rồi chữ mới"
+            t.representedObject = appBundleID
+            menu.addItem(t)
         }
         add("Luôn dùng gạch chân (tương thích tối đa)", .markedAlways, s.alwaysMarked)
 
@@ -155,6 +160,7 @@ enum AppMenu {
         case .autoRestore: s.update { $0.autoRestore.toggle() }
         case .markedApp: s.toggleMarked(for: appBundleID)
         case .markedAlways: s.alwaysMarked.toggle()
+        case .terminalApp: s.toggleTerminalMode(for: appBundleID)
         case .hotkey, .removeExcluded: break
         case .excludeCurrent:
             s.setExcluded([appBundleID], !s.excludedApps.contains(appBundleID))

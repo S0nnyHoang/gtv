@@ -26,6 +26,7 @@ public final class Session {
     private var marked = false   // từ hiện tại dùng marked text (gạch chân)
     private var anchor = 0       // vị trí bắt đầu của từ đang gõ
     private var qtApp = false    // ô nhập liệu thuộc ứng dụng Qt (xem `replace`)
+    private var terminal = false // từ hiện tại gõ ở chế độ terminal (xem `sendKeystrokes`)
     /// Vừa xoá lùi khi không có từ nào đang gõ (vd. "hoir " → xoá " " và "r" → còn "hoi"): ở phím chữ tiếp
     /// theo, đọc lại từ trước con trỏ để gõ tiếp (gõ "r" → "hỏi") thay vì bắt đầu từ mới.
     private var continueWordOnNextChar = false
@@ -35,13 +36,15 @@ public final class Session {
     public func reset() {
         engine.reset()
         marked = false
+        terminal = false
         continueWordOnNextChar = false
     }
 
     /// Trả về true nếu bộ gõ đã xử lý phím (ứng dụng không cần xử lý nữa).
     /// `qtApp`: ứng dụng viết bằng Qt (Telegram Desktop…), cần cách thay riêng — xem `replace`.
+    /// `terminal`: terminal (không thay được chữ đã gửi đi), dùng `sendKeystrokes`; `forceMarked` được ưu tiên.
     public func handle(_ key: Key, _ client: TextClient, options: EngineOptions, forceMarked: Bool,
-                       qtApp: Bool = false) -> Bool {
+                       qtApp: Bool = false, terminal: Bool = false) -> Bool {
         self.qtApp = qtApp
         switch key {
         case .other:
@@ -50,17 +53,22 @@ public final class Session {
             return false
         case .backspace:
             let handled = backspace(client)
-            if engine.isEmpty && !marked { continueWordOnNextChar = true }
+            if engine.isEmpty && !marked && !terminal { continueWordOnNextChar = true }
             return handled
         case let .char(ch):
             if engine.isEmpty {
                 engine.options = options
-                let sel = client.selectedRange()
-                marked = forceMarked || sel == nil
-                anchor = sel?.location ?? 0
-                if continueWordOnNextChar && !marked { resync(client) }
+                self.terminal = terminal && !forceMarked
+                if self.terminal {
+                    marked = false
+                } else {
+                    let sel = client.selectedRange()
+                    marked = forceMarked || sel == nil
+                    anchor = sel?.location ?? 0
+                    if continueWordOnNextChar && !marked { resync(client) }
+                }
                 continueWordOnNextChar = false
-            } else if !marked && !inSync(client.selectedRange()) {
+            } else if !marked && !self.terminal && !inSync(client.selectedRange()) {
                 resync(client)
             }
             guard let action = engine.process(ch) else {
@@ -71,6 +79,7 @@ public final class Session {
                 client.setMarkedText(engine.displayed)
                 return true
             }
+            if self.terminal { return sendKeystrokes(action, client) }
             return perform(action, client, retry: ch)
         }
     }
@@ -93,6 +102,11 @@ public final class Session {
 
     private func backspace(_ client: TextClient) -> Bool {
         guard !engine.isEmpty else { return false }
+        if terminal {
+            let handled = sendKeystrokes(engine.backspace(), client)
+            if engine.isEmpty { terminal = false }
+            return handled
+        }
         if marked {
             _ = engine.backspace()
             client.setMarkedText(engine.displayed)
@@ -113,10 +127,29 @@ public final class Session {
         let (text, action) = engine.finishWord()
         if marked {
             client.insertText(text)
+        } else if terminal {
+            _ = sendKeystrokes(action, client)
         } else if case let .replace(old, new) = action {
             _ = replace(old, new, client)
         }
         marked = false
+        terminal = false
+    }
+
+    /// Terminal gửi ngay mỗi ký tự xuống chương trình đang chạy (shell...), không có văn bản để thay hay
+    /// đọc lại. Thay vào đó gửi đi như người gõ phím: ký tự xoá lùi (DEL, 0x7f — đúng mã phím Delete gửi
+    /// xuống terminal) cho phần khác nhau rồi đến phần chữ mới, vd. "tiê" + "s" → DEL + "ế".
+    /// Không gạch chân nên shell thấy chữ ngay (gợi ý tự động của zsh, fish… vẫn hiện).
+    /// Bộ gõ không kiểm tra được màn hình: từ đang gõ bị bỏ khi gặp phím khác (mũi tên, Enter, click...).
+    private func sendKeystrokes(_ action: Action, _ client: TextClient) -> Bool {
+        guard case let .replace(old, new) = action else { return false }
+        let common = zip(old, new).prefix(while: { $0 == $1 }).count
+        // Mỗi DEL xoá một ký tự hiển thị trên dòng lệnh.
+        let deletes = old.count - common
+        let insert = String(new.dropFirst(common))
+        guard deletes > 0 || !insert.isEmpty else { return true }
+        client.insertText(String(repeating: "\u{7f}", count: deletes) + insert)
+        return true
     }
 
     private func perform(_ action: Action, _ client: TextClient, retry ch: Character?) -> Bool {

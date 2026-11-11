@@ -4,6 +4,19 @@ Mỗi phiên bản là một mục `## <phiên bản> — <ngày>`. Nội dung c
 note trên trang GitHub Releases (workflow `Release`). Phiên bản phải khớp `MARKETING_VERSION` trong
 `project.yml`.
 
+## 1.11.2 — 2026-11-11
+
+### Thay đổi
+- Terminal (Terminal, iTerm2, Ghostty, kitty, Alacritty, WezTerm, Warp…): gõ tiếng Việt không còn gạch
+  chân. Chữ được gửi xuống shell ngay nên gợi ý tự động (zsh-autosuggestions, fish…) hiện bình thường,
+  không phải bấm Tab.
+- Menu GTV: thêm "Chế độ terminal cho <ứng dụng>" để bật cho terminal chưa có trong danh sách. Nếu một
+  terminal gõ bị lỗi, bật "Dùng gạch chân cho <ứng dụng>" để quay lại cách cũ.
+
+### Sửa lỗi
+- Sau khi GTV cập nhật hoặc khởi động lại, cửa sổ đang mở chưa áp dụng cài đặt riêng của ứng dụng
+  (loại trừ, gạch chân) cho tới khi chuyển sang ứng dụng khác.
+
 ## 1.11.1 — 2026-10-12
 
 ### Sửa lỗi

@@ -49,13 +49,18 @@ private final class ClientAdapter: TextClient {
 /// - Bộ gõ nhớ vị trí bắt đầu của từ; nếu con trỏ không còn ở đúng chỗ (Cmd+A, Cmd+Z, chuột...)
 ///   thì bỏ từ cũ và đọc lại từ trên màn hình.
 ///
-/// Với các ứng dụng không hỗ trợ (terminal) thì dùng marked text như bộ gõ thông thường.
+/// Terminal không thay được chữ đã nhập: gửi ký tự xoá lùi rồi chữ mới (chế độ terminal, xem `Session`).
+/// Ứng dụng nào không hợp thì người dùng bật gạch chân (marked text) như bộ gõ thông thường.
 @objc(GTVInputController)
 final class GTVInputController: IMKInputController {
     private let session = Session()
     private let adapter = ClientAdapter()
     private var bundleID = ""
     private var hotkeyArmedAt: TimeInterval?
+    /// Số phím bộ gõ đã nhận, và độ lệch so với bộ đếm phím của hệ thống (xem `missedKeys`).
+    private var seenKeys = 0
+    private var keyOffset: Int?
+    private var lastKeyTime: TimeInterval?
 
     // MARK: - Vòng đời
 
@@ -100,6 +105,8 @@ final class GTVInputController: IMKInputController {
 
     override func handle(_ event: NSEvent!, client sender: Any!) -> Bool {
         guard let event, let client = sender as? Client else { return false }
+        // Bộ gõ khởi động lại khi ô nhập liệu đang mở (vd. sau khi cập nhật): không có activateServer.
+        if bundleID.isEmpty { bundleID = client.bundleIdentifier() ?? "" }
         let settings = Settings.shared
         let flags = event.modifierFlags.intersection([.command, .control, .option, .shift])
 
@@ -125,6 +132,7 @@ final class GTVInputController: IMKInputController {
             return false
         case .keyDown:
             hotkeyArmedAt = nil
+            if missedKeys(event), settings.useTerminalMode(for: bundleID) { session.reset() }
         default:                             // click chuột: con trỏ có thể đã đổi chỗ
             commit(client)
             return false
@@ -151,7 +159,31 @@ final class GTVInputController: IMKInputController {
         defer { adapter.client = nil }
         return session.handle(key, adapter, options: settings.options,
                               forceMarked: settings.useMarked(for: bundleID),
-                              qtApp: QtDetector.isQt(bundleID))
+                              qtApp: QtDetector.isQt(bundleID),
+                              terminal: settings.useTerminalMode(for: bundleID))
+    }
+
+    /// Có phím nào được nhấn mà bộ gõ không thấy kể từ phím trước không. Terminal.app tự gửi Delete,
+    /// Ctrl+U, mũi tên… xuống shell, không qua bộ gõ; ở chế độ terminal không đọc được dòng lệnh để
+    /// phát hiện, nên so bộ đếm phím của hệ thống với số phím bộ gõ đã nhận: lệch thêm nghĩa là có phím
+    /// xen vào, bỏ từ đang gõ (gõ tiếp như từ mới) thay vì thay sai chữ.
+    /// Bộ đếm không đồng bộ với lúc bộ gõ nhận phím: khi gõ nhanh nó có thể chưa tính phím này, hoặc đã
+    /// tính cả phím nhấn sau. Chỉ so khi lần nhấn phím mới nhất của hệ thống chính là phím này.
+    private func missedKeys(_ event: NSEvent) -> Bool {
+        seenKeys += 1
+        let gap = event.timestamp - (lastKeyTime ?? 0)
+        lastKeyTime = event.timestamp
+        // Thời điểm của lần nhấn phím mới nhất mà hệ thống đã đếm, so với phím này. Hai đồng hồ lệch nhau
+        // vài ms nên cho phép sai số, nhưng không quá nửa khoảng cách tới phím trước.
+        let d = ProcessInfo.processInfo.systemUptime
+            - CGEventSource.secondsSinceLastEventType(.combinedSessionState, eventType: .keyDown) - event.timestamp
+        let window = min(max(gap / 2, 0.003), 0.015)
+        guard d > -window, d < 0.003 else { return false }
+        let offset = Int(CGEventSource.counterForEventType(.combinedSessionState, eventType: .keyDown)) - seenKeys
+        guard let last = keyOffset else { keyOffset = offset; return false }
+        // Độ lệch thật chỉ tăng (có phím bộ gõ không thấy); đo ra nhỏ hơn là bộ đếm chưa kịp tính phím này.
+        keyOffset = max(last, offset)
+        return offset > last
     }
 
     // MARK: - Menu trong biểu tượng bộ gõ của macOS
